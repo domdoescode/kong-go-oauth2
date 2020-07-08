@@ -1,0 +1,15 @@
+# go.yml
+_format_version: "1.1"
+services:
+  - url: https://reqres.in/api/users?page=2
+    routes:
+      - paths:
+          - "/"
+    plugins:
+      - name: go-oauth2
+        config:
+          hosted_domains:
+            - fresh8gaming.com
+          hmac_secret: not-so-secret
+          client_id: redacted
+          client_secret: redacted

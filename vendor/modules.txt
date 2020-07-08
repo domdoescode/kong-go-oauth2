@@ -1,0 +1,45 @@
+# cloud.google.com/go v0.34.0
+cloud.google.com/go/compute/metadata
+# github.com/Kong/go-pdk v0.5.0
+## explicit
+github.com/Kong/go-pdk
+github.com/Kong/go-pdk/bridge
+github.com/Kong/go-pdk/client
+github.com/Kong/go-pdk/ctx
+github.com/Kong/go-pdk/entities
+github.com/Kong/go-pdk/ip
+github.com/Kong/go-pdk/log
+github.com/Kong/go-pdk/nginx
+github.com/Kong/go-pdk/node
+github.com/Kong/go-pdk/request
+github.com/Kong/go-pdk/response
+github.com/Kong/go-pdk/router
+github.com/Kong/go-pdk/service
+github.com/Kong/go-pdk/service/request
+github.com/Kong/go-pdk/service/response
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+## explicit
+github.com/dgrijalva/jwt-go
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+# golang.org/x/net v0.0.0-20190108225652-1e06a53dbb7e
+golang.org/x/net/context
+golang.org/x/net/context/ctxhttp
+# golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+## explicit
+golang.org/x/oauth2
+golang.org/x/oauth2/google
+golang.org/x/oauth2/internal
+golang.org/x/oauth2/jws
+golang.org/x/oauth2/jwt
+# google.golang.org/appengine v1.4.0
+google.golang.org/appengine
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/app_identity
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/modules
+google.golang.org/appengine/internal/remote_api
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/urlfetch
