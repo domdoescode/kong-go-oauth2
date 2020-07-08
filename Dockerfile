@@ -6,7 +6,8 @@ RUN go get github.com/Kong/go-pluginserver
 FROM builder as google-oauth-builder
 
 RUN mkdir /go-plugins
-COPY . /go/src/github.com/domudall/kong-go-oauth2
+COPY vendor /go/src/
+COPY go-oauth2.go /go/src/github.com/domudall/kong-go-oauth2/go-oauth2.go
 RUN go build -buildmode plugin -o /go-plugins/go-oauth2.so /go/src/github.com/domudall/kong-go-oauth2/go-oauth2.go
 
 FROM kong:2.0
