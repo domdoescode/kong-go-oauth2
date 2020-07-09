@@ -29,10 +29,11 @@ const (
 // Config contains the schema defined for the Kong Admin API to populate data
 // https://docs.konghq.com/2.0.x/go/#configuration-structure
 type Config struct {
-	HostedDomains []string `json:"hosted_domains"`
-	HmacSecret    string   `json:"hmac_secret"`
-	ClientID      string   `json:"client_id"`
-	ClientSecret  string   `json:"client_secret"`
+	HostedDomains       []string `json:"hosted_domains"`
+	HmacSecret          string   `json:"hmac_secret"`
+	ClientID            string   `json:"client_id"`
+	ClientSecret        string   `json:"client_secret"`
+	RedirectURLOverride string   `json:"redirect_url_override"`
 }
 
 // User is the response object from the Google User Info API
@@ -53,11 +54,14 @@ func New() interface{} {
 // Access is executed for every request from a client and before it is being proxied to the upstream service.
 // HTTP/HTTPS requests
 func (conf Config) Access(kong *pdk.PDK) {
-	scheme, _ := kong.Request.GetForwardedScheme()
-	host, _ := kong.Request.GetForwardedHost()
-	port, _ := kong.Request.GetForwardedPort()
+	redirectFullHost := conf.RedirectURLOverride
+	if redirectFullHost == "" {
+		scheme, _ := kong.Request.GetForwardedScheme()
+		host, _ := kong.Request.GetForwardedHost()
+		port, _ := kong.Request.GetForwardedPort()
 
-	redirectFullHost := fmt.Sprintf("%s://%s:%d", scheme, host, port)
+		redirectFullHost = fmt.Sprintf("%s://%s:%d", scheme, host, port)
+	}
 
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  fmt.Sprintf("%s/oauth/callback", redirectFullHost),
