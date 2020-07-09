@@ -3,8 +3,6 @@ FROM golang:alpine as builder
 RUN apk add --no-cache git gcc libc-dev
 RUN go get github.com/Kong/go-pluginserver
 
-FROM builder as google-oauth-builder
-
 RUN mkdir /go-plugins
 COPY vendor /go/src/
 COPY go-oauth2.go /go/src/github.com/domudall/kong-go-oauth2/go-oauth2.go
@@ -14,7 +12,7 @@ FROM kong:2.0
 
 COPY --from=builder /go/bin/go-pluginserver /usr/local/bin/go-pluginserver
 RUN mkdir /tmp/go-plugins
-COPY --from=google-oauth-builder /go-plugins/go-oauth2.so /tmp/go-plugins/go-oauth2.so
+COPY --from=builder /go-plugins/go-oauth2.so /tmp/go-plugins/go-oauth2.so
 
 COPY config.yml /tmp/config.yml
 
