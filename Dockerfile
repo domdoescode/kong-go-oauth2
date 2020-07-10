@@ -20,7 +20,7 @@ ENV KONG_LOG_LEVEL=debug
 ENV KONG_DATABASE=off
 ENV KONG_GO_PLUGINS_DIR=/tmp/go-plugins
 ENV KONG_DECLARATIVE_CONFIG=/tmp/config.yml
-ENV KONG_PLUGINS=go-google-oauth2
+ENV KONG_PLUGINS=bundled,go-google-oauth2
 ENV KONG_PROXY_LISTEN=0.0.0.0:8000
 
 USER root

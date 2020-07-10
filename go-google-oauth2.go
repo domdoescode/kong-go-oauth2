@@ -22,6 +22,11 @@ import (
 
 var googleOauthConfig *oauth2.Config
 
+var (
+	Priority int    = 1005
+	Version  string = "1.1.1"
+)
+
 const (
 	oauthGoogleUserInfoURL string = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 )
@@ -34,6 +39,7 @@ type Config struct {
 	ClientID            string   `json:"client_id"`
 	ClientSecret        string   `json:"client_secret"`
 	RedirectURLOverride string   `json:"redirect_url_override"`
+	ConsumerLookup      string   `json:"consumer_lookup"`
 }
 
 // User is the response object from the Google User Info API
@@ -54,6 +60,8 @@ func New() interface{} {
 // Access is executed for every request from a client and before it is being proxied to the upstream service.
 // HTTP/HTTPS requests
 func (conf Config) Access(kong *pdk.PDK) {
+	kong.Log.Info(fmt.Sprintf("%v", conf))
+
 	redirectFullHost := conf.RedirectURLOverride
 	if redirectFullHost == "" {
 		scheme, _ := kong.Request.GetForwardedScheme()
@@ -101,27 +109,13 @@ func (conf Config) Access(kong *pdk.PDK) {
 			handleHTTPError(kong, err, responseHeaders)
 		}
 
-		kong.Log.Info("get last page from cookie")
-		lastPagePath, err := kong.Nginx.GetVar("cookie_kong-oauth-lp")
-		if err != nil {
-			redirect(kong, 302, "/")
-			return
-		}
-
-		redirect(kong, 302, lastPagePath)
+		redirect(kong, 302, "/")
 		return
-	}
-
-	lastPage := http.Cookie{Name: "kong-oauth-lp", Value: path, Expires: time.Now().Add(1 * time.Hour), Path: "/"}
-	err = kong.Response.SetHeader("Set-Cookie", lastPage.String())
-	if err != nil {
-		handleHTTPError(kong, err, responseHeaders)
 	}
 
 	kong.Log.Info("get oauth jwt")
 	cookieKongOauth, err := kong.Nginx.GetVar("cookie_kong-oauth")
 	if err != nil {
-		redirect(kong, 302, "/oauth/login")
 		return
 	}
 
@@ -148,17 +142,18 @@ func (conf Config) Access(kong *pdk.PDK) {
 			}
 
 			if !trusted {
-				handleHTTPError(kong, ErrAccessDenied, responseHeaders)
 				return
 			}
 		}
 	} else {
 		kong.Log.Info("token invalid or not OK")
-		redirect(kong, 302, "/oauth/login")
 		return
 	}
 
+	consumer, _ := kong.Client.LoadConsumer(conf.ConsumerLookup, true)
+
 	// Everything is grand
+	kong.Client.Authenticate(&consumer, nil)
 }
 
 func oauthLogin(kong *pdk.PDK) error {

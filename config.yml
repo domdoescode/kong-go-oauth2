@@ -6,10 +6,23 @@ services:
       - paths:
           - "/"
     plugins:
-      - name: go-oauth2
+      - name: acl
+        enabled: false
         config:
-          hosted_domains:
-            - fresh8gaming.com
-          hmac_secret: not-so-secret
-          client_id: redacted
-          client_secret: redacted
+          whitelist:
+            - sso
+
+consumers:
+  - username: go-google-oauth2
+    acls:
+      - group: sso
+
+plugins:
+  - name: go-google-oauth2
+    config:
+      hosted_domains:
+        - fresh8gaming.com
+      hmac_secret: not-so-secret
+      client_id: redacted
+      client_secret: redacted
+      consumer_lookup: go-google-oauth2
